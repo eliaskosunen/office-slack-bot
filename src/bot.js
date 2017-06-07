@@ -6,6 +6,7 @@ moment.locale('fi');
 const SensorApi = require('./sensorApi');
 const RestaurantService = require('./restaurantService');
 const CalendarService = require('./calendarService');
+const DickbuttService = require('./dickbuttService');
 const Config = require('./configuration');
 
 const API_USERNAME = process.env.API_USERNAME || Config.apiUserName;
@@ -16,6 +17,8 @@ const LOCATION_API_KEY = process.env.LOCATION_API_KEY || Config.locationApiKey;
 const api = new SensorApi(API_USERNAME, API_PASSWORD, API_URL, Config.sensors);
 const restaurants = new RestaurantService(LOCATION_API_KEY, Config.office);
 const calendar = new CalendarService(Config.meetingRooms);
+const dickbutt = new DickbuttService();
+dickbutt.run();
 
 // Bot returns object literal instead of class, so we can have private functions
 const bot = () => {
