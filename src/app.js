@@ -6,8 +6,10 @@ const Config = require('./configuration');
 // If constants not found from environment variables, try to get it from keys.js file
 const BOT_TOKEN = process.env.BOT_TOKEN || Config.botToken;
 const HOME_CHANNEL_ID = process.env.CHANNEL_ID || Config.homeChannelId;
+const WEBHOOK_URL = process.env.WEBHOOK_URL || Config.webhookUrl;
 
 const myBot = require('./bot');
+const DickbuttService = require('./dickbuttService');
 
 const controller = Botkit.slackbot({
     debug: false
@@ -20,6 +22,29 @@ const botInstance = controller.spawn({
 const userConfig = {
     user: Config.slackAdminUserId
 };
+
+controller.on('message_received', (bot, message) => {
+    const giphyCallback = (bot) => {
+        bot.api.chat.postMessage({
+            text: "/giphy dickbutt"
+        });
+    };
+    const attachmentCallback = (bot) => {
+        bot.api.chat.postMessage({
+            attachments: [{
+                image_url: "http://i.imgur.com/ORhXMf2.png"
+            }]
+        });
+    };
+    const textCallback = (bot) => {
+        bot.api.chat.postMessage({
+            text: "kokpers"
+        });
+    };
+    const dickbutt = new DickbuttService(Config.fridayFun, () => {
+        textCallback(bot);
+    });
+});
 
 controller.on(['direct_message', 'direct_mention'], (bot, message) => {
     bot.api.users.info({ user: message.user }, (error, response) => {
@@ -36,7 +61,7 @@ controller.on(['direct_message', 'direct_mention'], (bot, message) => {
 });
 
 controller.on('rtm_close', () => {
-    // Just exit. Forver or something similair will restart this
+    // Just exit. Forver or something similar will restart this
     process.exit();
 });
 
